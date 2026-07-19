@@ -379,7 +379,7 @@ glyph, so a 32×32 avatar renders 32px tall but ~10px wide. Use `primaryAxisSizi
 and `counterAxisSizingMode = 'FIXED'` after `resize(size, size)`, or skip auto-layout and center
 the child manually. See `figma-patterns.md` Section 4.1.
 
-**DS variable + text-style binding** — for every fill, radius, spacing, and **border-width**
+**DS variable + text-style binding (bind-as-you-build)** — for every fill, radius, spacing, and **border-width**
 where a variable key was found in Phase 2, bind it instead of hardcoding. Bind body/label/heading
 text to the library **text style** instead of setting raw `fontSize`/`fontName`. The variables API
 lives under `figma.variables.*` (NOT the `figma` global), and `setBoundVariableForPaint` takes a
@@ -412,6 +412,12 @@ await textNode.setTextStyleIdAsync(textStyle.id);   // font/size/weight/lineHeig
 **Page and surface backgrounds** must bind to the surface/wash color variable too — never a raw
 page-background hex. Fall back to raw CSS values only when Phase 2 found no DS variable or text
 style for that role (and note it as drift).
+
+**Handoff to `figma-rebind`** — bind-as-you-build is the *fresh-build* path. For anything already
+hardcoded (a copied frame, a manual mock, or a node where you skipped binding), don't rebuild —
+run the **`figma-rebind`** skill, which audits a node and binds its colours/radii/type to the DS
+(it also reverse-maps copies by resolved hex). The DS Drift annotations you add below are that
+skill's worklist.
 
 **Annotations — attach to nodes during build, not after**
 
